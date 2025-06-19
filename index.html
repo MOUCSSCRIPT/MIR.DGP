@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiGazProcessByGreenalp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+       <link rel="stylesheet" href="style.css">
+       <script src="script.js" defer></script>
+       <!-- En-tête -->
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
+
+</head>
+<body>
+    
+    <!-- Barre de navigation (pour basculer entre les pages) -->
+    <nav class="page-nav">
+        <button onclick="showPage('login-page')">Connexion</button>
+        <button onclick="showPage('document-page')">Document</button>
+        <button onclick="showPage('dashboard-page')">Dashboard</button>
+    </nav>
+
+    <!-- Page 1: Connexion (ancien index.html) -->
+    <section id="login-page">
+        <div class="logo">
+            <img src="assets/logo.png" alt="GREENALP Logo" width="200">
+        </div>
+        <div class="form-container">
+            <h1>Connexion</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn">Se connecter</button>
+            </form>
+            <div class="links">
+                <a href="#" onclick="showPage('dashboard-page')">Accès administrateur</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page 2: Document -->
+    <section id="document-page" class="hidden">
+        <header>
+            <div class="logo">
+                <img src="assets/logo.png" alt="GREENALP Logo" width="200">
+            </div>
+        
+        </header>
+        <main class="document-container">
+            <h1>ENTRETIEN CONDUITE MONTANTE GAZ NATUREL</h1>
+            <div class="document-view">
+                <form id="gasForm">
+                <div class="document-preview">
+                    <div class="document-content">
+                        <h2>Avis de remise en gaz</h2>
+                        <div class="attention-box">
+                            <h3> # ATTENTION</h3>
+                            <p>Dans le cadre de l'entretien de la conduite montante gaz naturel de votre immeuble, la distribution du gaz sera interrompue <span id="cutoffDate"></span>.</p>
+                            <div class="security-box">
+                                <h4>DISPOSITION DE SECURITE A RESPECTER</h4>
+                                <p>Ne pas tenter de vous servir du gaz pendant la plage horaire citée ci-dessus.</p>
+                            </div>
+                            
+                            <div class="important-box">
+                                <h4>➡️ IMPORTANT : pour une remise en gaz dès la fin des travaux</h4>
+                                <p>complétez cet avis avant la fin des travaux.</p>
+                            </div>
+                            
+                            <form id="gasForm">
+                                <p>Je soussigné(e), M., Mme <input type="text" id="clientName" required></p>
+                                <p>Réference contrat- EDL <input type="text" id="clientEdl" required></p>
+                                <p>habitant à l'étage : <input type="text" id="floorNumber" required></p>
+                                <p>certifie avoir été informé(e) par GREENALP qu'une coupure de l'alimentation du gaz naturel de mon immeuble aurait lieu le : <input type="date" id="cutoffDate2" required></p>
+                                <p>à l'adresse : 
+                                    <input type="text" id="clientAddress" required placeholder="ex:49 felix esclangon..">
+                                </p>                                
+                                
+                                <p>et je déclare avoir pris les mesures de sécurité nécessaires en me conformant aux consignes de sécurité ci-dessous :</p>
+                                
+                                <ul>
+                                    <li>J'ai fermé tous les robinets de mon installation intérieure et de mes appareils ;</li>
+                                    <li>J'ai fermé le robinet du compteur de gaz naturel si celui-ci est situé à l'intérieur de mon logement.</li>
+                                </ul>
+                            </form>
+                        </div>
+                                
+                        <div class="signature-section">
+                            <p>Date : <span id="signatureDate"${new Date().toLocaleDateString('fr-FR')}</span></p>
+                            <div class="signature-pad-container">
+                                <canvas  id="signaturePad"></canvas>
+                                <button id="clearSignature" class="btn-secondary">Effacer la signature</button>
+                            </div>
+                            <p>Signature client :</p>
+                       
+                    
+                        <div class="document-actions">
+                            <button type="submit" class="btn-primary">Signer et soumettre</button>
+                        </div>
+
+
+                            <div class="warning-box">
+                                <h4>Dans le cas où ces dispositions ne seraient pas respectées :</h4>
+                                <p>par mesure de sécurité, nous serions dans l'impossibilité de rétablir la fourniture de gaz dans la journée. Pour une remise en gaz ultérieure, vous devrez prendre rendez-vous avec nos services du lundi au vendredi entre 7h30 et 20h00 au 04 76 84 37 36.</p>
+                            </div>
+                            
+                            <div class="footer">
+                                <p>GREENALP - 49, rue Félix Esclangon - CS 10110 - 38042 Grenoble cedex 9</p>
+                            </div>
+                        </div>
+                    </div>
+                
+               
+            </div>
+        </main>
+    </section>
+
+    <!-- Page 3: Dashboard-->
+    <section id="dashboard-page" class="hidden">
+        <div class="dashboard-container">
+            <aside class="sidebar">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="GREENALP Logo">
+                    <div class="magic-sparkle"></div> <!-- Nouvel élément -->
+                </div>
+                
+                <nav>
+                    <ul>
+                        <li class="active"><a href="#"><i class="fas fa-tachometer-alt"></i> Tableau de bord</a></li>
+                        <li>
+                            <a href="#" id="clientCreationToggle">
+                                <i class="fas fa-user-plus magic-icon"></i> Ajout Client
+                                <i class="fas fa-chevron-down dropdown-arrow"></i>
+                            </a>
+                            <div class="client-creation-panel">
+                                <form id="addClientForm" class="magic-form">
+                                    <div class="form-group">
+                                        <label><i class="fas fa-hashtag small-icon"></i> EDL</label>
+                                        <input type="text" id="newEdl" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i class="fas fa-user small-icon"></i> Nom</label>
+                                        <input type="text" id="newClientName" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label><i class="fas fa-layer-group small-icon"></i> Étage</label>
+                                            <input type="text" id="newFloor">
+                                        </div>
+                                        <div class="form-group">
+                                            <label><i class="fas fa-map-marker-alt small-icon"></i> Adresse</label>
+                                            <input type="text" id="newAddress">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="magic-btn">
+                                        <i class="fas fa-sparkle"></i> Créer
+                                    </button>
+                                </form>
+                                <div class="magic-divider">ou</div>
+                                <label class="file-upload-label">
+                                    <i class="fas fa-file-excel"></i> Importer Excel
+                                    <input type="file" id="excelImport" accept=".xlsx, .xls">
+                                </label>
+                            </div>
+                        </li>
+                        <li><a href="#documents"><i class="fas fa-file-contract"></i> Documents</a></li>
+                        <li><a href="#users"><i class="fas fa-users"></i> Utilisateurs</a></li>
+                        <li><a href="#settings"><i class="fas fa-cog"></i> Paramètres</a></li>
+                        <li><a href="#reports"><i class="fas fa-chart-bar"></i> Rapports</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="sidebar-footer">
+                    <div class="magic-dust"></div>
+                </div>
+            </aside>
+    
+            <main class="main-content">
+                <header class="top-bar">
+                    <div class="search-bar">
+                        <input type="text" id="clientSearch" placeholder="Rechercher par EDL ou Adresse...">
+                        <button onclick="filterClients()"><i class="fas fa-search"></i></button>
+                    
+                    </div>
+                    <div class="user-actions">
+                        <div class="notifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge">3</span>
+                        </div>
+                        <div class="user-profile">
+                            <img src="../assets/admin-avatar.png" alt="Admin Avatar">
+                            <span>Administrateur</span>
+                        </div>
+                    </div>
+                </header>
+    
+                <div class="content-area">
+                    <h1>Tableau de bord</h1>
+                    
+                    <div class="stats-cards">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Documents signés</h3>
+                                <i class="fas fa-file-signature"></i>
+                            </div>
+                            <div class="card-body">
+                                <span class="stat-number" id="signedDocsCount">0</span>
+                                <span class="stat-change up">+12% ce mois</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>PDS HORS SERVICE</h3>
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="card-body">
+                                <span class="stat-number" id="pendingDocsCount">0</span>
+                                <span class="stat-change down">-5% ce mois</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>TOTALE INCIDENTS</h3>  <!-- Changé ici -->
+                                <i class="fas fa-building"></i>  <!-- Nouvelle icône plus pertinente -->
+                            </div>
+                            <div class="card-body">
+                                <span class="stat-number" id="pdsCount">0</span>
+                                <span class="stat-change up">+0% ce mois</span>
+                            </div>
+                        </div></div>
+                    </div>
+                    
+                    <div class="recent-documents">
+                        <h2>Documents récents</h2>
+                        <table id="documentsTable">
+                            <thead>
+                                <tr>
+                                    <th>Référence</th>
+                                    <th>PDS - Occupant</th>
+                                    <th>Adresse</th>
+                                    <th>Étage</th>
+                                    <th>Date de signature</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                    <th>Réouvert</th>
+                                    <th>Commentaires</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rempli dynamiquement par JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+      
+    </section>
+   
+    <script>
+        // Affiche une page et cache les autres
+        function showPage(pageId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        // Par défaut, on affiche la page de connexion
+        showPage('login-page');
+
+        // Gestion du formulaire de connexion
+        document.getElementById('loginForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showPage('document-page'); // Redirige vers le document après connexion
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+</body>
+</html>
